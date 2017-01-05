@@ -1,0 +1,60 @@
+/******************************************************************************
+  Copyright 2016 KNUPATH
+  All rights reserved.
+  KnuPath Proprietary and Confidential
+
+  File: kernel.knucpp
+
+  Description: Ping is sends a message to Pong and relays the response to the host
+  			   Pong replays back to Ping
+
+******************************************************************************/
+#include <kpi/kpi_kernel.h>
+
+extern "C" __knu_kernel
+void ping()
+{
+
+	// Message buffer
+	int msg_send[1];
+	int msg_relay[3];
+
+	// Send to the single pong utility
+	// Rank 8 is the first tDSP of the second cluster
+	// See main for its location
+	int destination = 8;
+
+	// start with my rank
+	msg_send[0] = KPI_Rank();
+
+	// Send who i am to the destination
+	KPI_Send(&msg_send[0], 1, destination);
+
+	// Wait for the other kernel to respond
+	KPI_Recv(&msg_relay[0], 2);
+
+    // Append my rank
+	msg_relay[2] = KPI_Rank();
+
+	// Relay the message to the HOST
+	// KPI_Physical_ID() returns IDR contents of tDSP. This field isn't used.
+	KPI_Send_Host(&msg_relay[0], 3, KPI_Physical_ID());
+}
+
+extern "C" __knu_kernel
+void pong()
+{
+	int msg_relay[2];
+
+	while (1)
+	{
+		// Receive message from whomever (host or tDSP)
+		KPI_Recv(&msg_relay[0], 1);
+
+		// Append my rank
+		msg_relay[1] = KPI_Rank();
+
+		// Reply to the original sender (sender's rank expected to be in the first payload)
+		KPI_Send(&msg_relay[0], 2, msg_relay[0]);
+	}
+}

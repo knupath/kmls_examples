@@ -1,0 +1,14 @@
+0 -- Sent = 1 -- Total = 1
+1 -- Sent = 1 -- Total = 2
+2 -- Sent = 1 -- Total = 3
+3 -- Sent = 2 -- Total = 5
+4 -- Sent = 2 -- Total = 7
+5 -- Sent = 2 -- Total = 9
+6 -- Sent = 3 -- Total = 12
+7 -- Sent = 4 -- Total = 16
+8 -- Sent = 5 -- Total = 21
+9 -- Sent = 6 -- Total = 27
+10 -- Sent = 7 -- Total = 34
+11 -- Sent = -1 -- Total = 33
+12 -- Sent = -33 -- Total = 0
+Done!

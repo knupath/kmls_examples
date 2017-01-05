@@ -1,0 +1,14 @@
+kpi_echo_cpp
+
+Description:
+  Host will send a message to a kernel and wait for kernel's echo.
+  Kernel will echo host's message back to the host.
+
+Expected output:
+  Host will print what was sent and what was received (in ascii)
+  	printf("Sent: %s\n", sent);
+  	printf("Received: %s\n", received);
+
+Build and run:
+  1) Run 'make' in example application directory
+  2) Execute the compiled example code using './[example application]' in example application directory

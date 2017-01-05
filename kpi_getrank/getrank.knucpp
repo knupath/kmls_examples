@@ -1,0 +1,28 @@
+/******************************************************************************
+  Copyright 2016 KNUPATH
+  All rights reserved.
+  KNUPATH Proprietary and Confidential
+
+  File: getrank.knucpp
+
+  Description: Kernel code for KPI get rank example. Each node in the complex
+  obtains its rank and sends the rank to the Host.
+
+******************************************************************************/
+
+#include "kpi/kpi_kernel.h"
+
+extern "C" __knu_kernel void getrank(int test_arg)
+{
+    int rank = KPI_Rank();
+
+    // Send a single word to the host, containing the tDSP "rank" within
+    // the launch.
+    //
+    // When sending to the host, we can put whatever we would like in the
+    // flit address bits. Here, we use the physical ID.
+    KPI_Send_Host(&rank, 1, KPI_Physical_ID());
+
+    // Alternatively, we could send the argument value.
+    //KPI_Send_Host(&rank, 1, test_arg);
+}

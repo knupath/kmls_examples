@@ -1,0 +1,9 @@
+{
+  "schema":[
+    {
+       "filename":"example_output.csv",
+       "format":"CSV",
+       "description":"Contains approx's of pi for different sample sizes"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+/******************************************************************************
+  Copyright 2016 KNUPATH
+  All rights reserved.
+  KnuPath Proprietary and Confidential
+
+  File: kernel.knucpp
+
+  Description: Kernel code for KPI echo example. kernel:echo will
+  receive a message from the Host and echo the message back.
+
+******************************************************************************/
+#include <kpi/kpi_kernel.h>
+
+extern "C" __knu_kernel
+void echo()
+{
+  int helloWorld[3];
+
+  // Receive message from host.
+  KPI_Recv(&helloWorld[0], 3);
+
+  // KPI_Physical_ID() returns IDR contents of tDSP. This field isn't used.
+  KPI_Send_Host(&helloWorld[0], 3, KPI_Physical_ID());
+}

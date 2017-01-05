@@ -1,0 +1,92 @@
+/******************************************************************************
+  Copyright 2016 KNUPATH
+  All rights reserved.
+  KNUPATH Proprietary and Confidential
+
+  File: pirand.knucpp
+
+  Description: Kernel code for KPI pi estimation example
+
+******************************************************************************/
+
+#include "kpi/kpi_kernel.h"
+
+const float        R         = 1.0;
+const unsigned int RAND_MASK = 0x00ffffff;
+const float        maxRand   = (float) RAND_MASK;
+
+float getRandCoord()
+{
+    float randNum = (float) (KPI_Rand() & RAND_MASK);
+    float coord = (randNum / maxRand * 2.0 * R) - R;
+    return coord;
+}
+
+bool isInCircle(float x, float y)
+{
+    float dist = __builtin_knureon_fsqrt((x * x) + (y * y));
+    return (dist <= R);
+}
+
+// Generate random points within a square and find the ratio of points
+// which fall within an inscribed circle
+extern "C" __knu_kernel
+void piRandRatio(int coordsPerRank)
+{
+    const int RANK       = KPI_Rank();
+    int WORLD_SIZE = KPI_World_Size();
+
+    // Each rank needs a different rand seed
+    KPI_Srand(0x314159 * RANK, 0x314159 * 2 * RANK, 0x314159 * 3 * RANK);
+
+    int numInCircle = 0;
+    int numCoords;
+
+    for (numCoords = 0; numCoords < coordsPerRank; numCoords++)
+    {
+        // Generate random coordinates within square
+        float x = getRandCoord();
+        float y = getRandCoord();
+
+        // Count the number of coordinates within an inscribed circle
+        if (isInCircle(x, y))
+        {
+            numInCircle++;
+        }
+    }
+
+    if(0 != RANK)
+    {
+        // All tDSPs except RANK 0 will send the ratio of coordinates
+        // within the circle to the "aggregator" at RANK 0
+        float ratioInCircle = (float) numInCircle / (float) coordsPerRank;
+        // Send the ratio to rank 0
+        KPI_Send(&ratioInCircle, 1, 0);
+    }
+    else
+    {
+        // RANK 0 will collect data from the other tDSPs and send the
+        // result to the host.
+        float     aggRatioInCircle = 0.0f;
+
+        // Sum up the resulting ratios of points inside the circle
+        for (int i = 1; i < WORLD_SIZE; i++)
+        {
+            float ratioInCircle;
+            KPI_Recv(&ratioInCircle, 1);
+            aggRatioInCircle += ratioInCircle;
+        }
+
+        // Calculate average ratio of points inside the circle
+        aggRatioInCircle /= (float) (WORLD_SIZE - 1);
+
+        // Estimate pi = 4 * (points inside circle) / (total points)
+        float pi = aggRatioInCircle * 4.0;
+
+        // Send result to host
+        KPI_Send_Host(&pi, sizeof(pi)/4, 0);
+
+        // Send World Size
+        KPI_Send_Host(&WORLD_SIZE, 1, 0);
+    }
+}
