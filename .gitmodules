@@ -1,0 +1,3 @@
+[submodule "kpi_adder"]
+	path = kpi_adder
+	url = https://github.com/knupath/kpi_adder
