@@ -1,18 +1,21 @@
 # ----------------------------------------------------------------------
-EXE            :=kpi_getrank
-SRCS           :=kpi_getrank.cpp getrank.knucpp
-# Useful KNUCC Flags:
-# -v                   Run in verbose mode to display individual steps
-# -k                   Keep intermediate files for examination/debugging
-# --show-disassembly   Show disassembly output during compilation
-# --gen-disassembly    Generate '.os' disassembly files during compilation
-# --gen-assembly       Generate .s assembly language files, which can
-#                      later be processed by an assembler.
-KNUCC_FLAGS    :=
+# KPI Makefile Template
 # ----------------------------------------------------------------------
+# Runtime Files
+EXE            := example
+# Grab all files (Default)
+SRCS       		 :=$(wildcard *.cpp) $(wildcard *.knucpp)
+# Specify source files
+# SRCS           := main.cpp kernel.knucpp
+#
+# EXE = Generated executables name
+# SRCS = Source files
+# ----------------------------------------------------------------------
+
 OBJS           :=$(addsuffix .o,$(basename $(SRCS)))
 TEMPFILES      :=$(addsuffix .*, $(wildcard *.knuc))
-KNUPATH_INSTALL:=/opt/knupath
+
+KNUPATH_INSTALL?=$(KNU_PATH)
 KNUCC          :=$(KNUPATH_INSTALL)/bin/knucc
 CPPFLAGS       :=-I$(KNUPATH_INSTALL)/include \
                  -I$(KNUPATH_INSTALL)/include/kpi
@@ -20,21 +23,24 @@ CXXFLAGS       :=-std=c++11
 LDFLAGS        :=-L$(KNUPATH_INSTALL)/lib -Wl,-rpath,$(KNUPATH_INSTALL)/lib
 LDLIBS         :=-lkpirt -lism -llfi
 
-.PHONY: all clean
+.PHONY: all run clean
 
 all: $(EXE)
+
+run: all
+	./$(EXE)
 
 clean:
 	rm -rf $(EXE) $(OBJS) $(TEMPFILES)
 
 %.o : %.knuc
-	$(KNUCC) $(KNUCC_FLAGS) -c -o $@ $< 
+	$(KNUCC) -c -o $@ $<
 
 %.o : %.knucpp
-	$(KNUCC) $(KNUCC_FLAGS) -c -o $@ $< 
+	$(KNUCC) -c -o $@ $<
 
 %.o : %.knucxx
-	$(KNUCC) $(KNUCC_FLAGS) -c -o $@ $<
+	$(KNUCC) -c -o $@ $<
 
 $(EXE) : $(OBJS)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS) 
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)

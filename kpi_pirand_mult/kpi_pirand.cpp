@@ -37,13 +37,14 @@ int main(int argc, char* argv[])
   output << "Iteration, World Size, coordsPerRank, # Samples, Iteration RunTime (Sec), Pi Value" << std::endl;
 
   // Run Limit (10 = 1 billion per tdsp)
-  int runLimit = 10;
+  // Current system only works on runLimit = 2
+  int runLimit = 1;
 
   // Set first coordsPerRank to 1
   int coordsPerRank = 1;
 
   // Run in increments of the power of 2
-  for (int i=1; i<runLimit; i+=1)
+  for (int i=1; i<=runLimit; i+=1)
   {
     // Get start of each iteration
     std::clock_t begin = std::clock();
