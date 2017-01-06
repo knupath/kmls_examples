@@ -1,3 +1,15 @@
 [submodule "kpi_adder"]
 	path = kpi_adder
 	url = https://github.com/knupath/kpi_adder
+[submodule "kpi_echo_cpp"]
+	path = kpi_echo_cpp
+	url = https://github.com/knupath/kpi_echo_cpp
+[submodule "kpi_getrank"]
+	path = kpi_getrank
+	url = https://github.com/knupath/kpi_getrank
+[submodule "kpi_pirand_multi"]
+	path = kpi_pirand_multi
+	url = https://github.com/knupath/kpi_pirand_multi
+[submodule "kpi_pong_util"]
+	path = kpi_pong_util
+	url = https://github.com/knupath/kpi_pong_util

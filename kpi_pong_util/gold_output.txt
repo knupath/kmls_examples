@@ -1,8 +1,0 @@
-Ping rank: 0, Pong rank: 8, Relay rank: 0
-Ping rank: 1, Pong rank: 8, Relay rank: 1
-Ping rank: 2, Pong rank: 8, Relay rank: 2
-Ping rank: 3, Pong rank: 8, Relay rank: 3
-Ping rank: 4, Pong rank: 8, Relay rank: 4
-Ping rank: 5, Pong rank: 8, Relay rank: 5
-Ping rank: 6, Pong rank: 8, Relay rank: 6
-Ping rank: 7, Pong rank: 8, Relay rank: 7
